@@ -14,7 +14,7 @@ public class StoreSCMConfigurationTest extends HudsonTestCase {
 
     public void testConfigRoundtrip() throws Exception {
         FreeStyleProject p = createFreeStyleProject();
-        StoreSCM original = new StoreSCM("Repo", "\\d+");
+        StoreSCM original = new StoreSCM("Repo", "\\d+", "Integrated");
         p.setScm(original);
 
         submit(createWebClient().getPage(p, "configure").getFormByName("config"));
@@ -22,6 +22,7 @@ public class StoreSCMConfigurationTest extends HudsonTestCase {
         StoreSCM loaded = (StoreSCM) p.getScm();
         assertEquals("repositoryName", original.getRepositoryName(), loaded.getRepositoryName());
         assertEquals("versionRegex", original.getVersionRegex(), loaded.getVersionRegex());
+        assertEquals("minimumBlessingLevel", original.getMinimumBlessingLevel(), loaded.getMinimumBlessingLevel());
     }
 
 }

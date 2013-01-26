@@ -9,6 +9,7 @@ import hudson.model.AbstractProject;
 import hudson.model.BuildListener;
 import hudson.model.TaskListener;
 import hudson.scm.*;
+import hudson.util.ListBoxModel;
 import net.sf.json.JSONObject;
 import org.kohsuke.stapler.DataBoundConstructor;
 import org.kohsuke.stapler.StaplerRequest;
@@ -19,11 +20,13 @@ import java.io.IOException;
 public class StoreSCM extends SCM {
     private final String repositoryName;
     private final String versionRegex;
+    private final String minimumBlessingLevel;
 
     @DataBoundConstructor
-    public StoreSCM(String repositoryName, String versionRegex) {
+    public StoreSCM(String repositoryName, String versionRegex, String minimumBlessingLevel) {
         this.repositoryName = repositoryName;
         this.versionRegex = versionRegex;
+        this.minimumBlessingLevel = minimumBlessingLevel;
     }
 
     @Override
@@ -46,6 +49,11 @@ public class StoreSCM extends SCM {
         return null;  //To change body of implemented methods use File | Settings | File Templates.
     }
 
+    @Override
+    public DescriptorImpl getDescriptor() {
+        return (DescriptorImpl) super.getDescriptor();
+    }
+
     public String getRepositoryName() {
         return repositoryName;
     }
@@ -54,9 +62,8 @@ public class StoreSCM extends SCM {
         return versionRegex;
     }
 
-    @Override
-    public DescriptorImpl getDescriptor() {
-        return (DescriptorImpl) super.getDescriptor();
+    public String getMinimumBlessingLevel() {
+        return minimumBlessingLevel;
     }
 
     @Extension
@@ -80,8 +87,29 @@ public class StoreSCM extends SCM {
             return true;
         }
 
+        public ListBoxModel doFillMinimumBlessingLevelItems() {
+            ListBoxModel items = new ListBoxModel();
+            items.add("Broken");
+            items.add("Work In Progress");
+            items.add("Development");
+            items.add("To Review");
+            items.add("Patch");
+            items.add("Integration-Ready");
+            items.add("Integrated");
+            items.add("Ready to Merge");
+            items.add("Merged");
+            items.add("Tested");
+            items.add("Internal Release");
+            items.add("Released");
+            return items;
+        }
+
         public String getDefaultVersionRegex() {
             return ".+";
+        }
+
+        public String getDefaultMinimumBlessingLevel() {
+            return "Development";
         }
 
         public String getScript() {

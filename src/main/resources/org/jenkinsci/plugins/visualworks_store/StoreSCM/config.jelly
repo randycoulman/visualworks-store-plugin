@@ -7,4 +7,9 @@
              description="Regular expression specifying which versions to consider.">
         <f:textbox default="${descriptor.defaultVersionRegex}"/>
     </f:entry>
+
+    <f:entry title="Minimum Blessing Level" field="minimumBlessingLevel"
+             description="Pundle versions with a lower blessing level will not be considered">
+        <f:select default="${descriptor.defaultMinimumBlessingLevel}"/>
+    </f:entry>
 </j:jelly>
