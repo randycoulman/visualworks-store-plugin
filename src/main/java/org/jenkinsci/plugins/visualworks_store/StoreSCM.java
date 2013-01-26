@@ -10,12 +10,19 @@ import hudson.model.BuildListener;
 import hudson.model.TaskListener;
 import hudson.scm.*;
 import net.sf.json.JSONObject;
+import org.kohsuke.stapler.DataBoundConstructor;
 import org.kohsuke.stapler.StaplerRequest;
 
 import java.io.File;
 import java.io.IOException;
 
 public class StoreSCM extends SCM {
+    private final String repositoryName;
+
+    @DataBoundConstructor
+    public StoreSCM(String repositoryName) {
+        this.repositoryName = repositoryName;
+    }
 
     @Override
     public SCMRevisionState calcRevisionsFromBuild(AbstractBuild<?, ?> abstractBuild, Launcher launcher, TaskListener taskListener) throws IOException, InterruptedException {
@@ -35,6 +42,10 @@ public class StoreSCM extends SCM {
     @Override
     public ChangeLogParser createChangeLogParser() {
         return null;  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    public String getRepositoryName() {
+        return repositoryName;
     }
 
     @Override

@@ -1,0 +1,5 @@
+<j:jelly xmlns:j="jelly:core" xmlns:f="/lib/form">
+    <f:entry title="Repository Name" field="repositoryName" description="Name of the Store repository to check.">
+        <f:textbox/>
+    </f:entry>
+</j:jelly>
