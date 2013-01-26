@@ -2,4 +2,9 @@
     <f:entry title="Repository Name" field="repositoryName" description="Name of the Store repository to check.">
         <f:textbox/>
     </f:entry>
+
+    <f:entry title="Version Regex" field="versionRegex"
+             description="Regular expression specifying which versions to consider.">
+        <f:textbox default="${descriptor.defaultVersionRegex}"/>
+    </f:entry>
 </j:jelly>

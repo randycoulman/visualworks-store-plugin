@@ -18,10 +18,12 @@ import java.io.IOException;
 
 public class StoreSCM extends SCM {
     private final String repositoryName;
+    private final String versionRegex;
 
     @DataBoundConstructor
-    public StoreSCM(String repositoryName) {
+    public StoreSCM(String repositoryName, String versionRegex) {
         this.repositoryName = repositoryName;
+        this.versionRegex = versionRegex;
     }
 
     @Override
@@ -48,6 +50,10 @@ public class StoreSCM extends SCM {
         return repositoryName;
     }
 
+    public String getVersionRegex() {
+        return versionRegex;
+    }
+
     @Override
     public DescriptorImpl getDescriptor() {
         return (DescriptorImpl) super.getDescriptor();
@@ -72,6 +78,10 @@ public class StoreSCM extends SCM {
             req.bindJSON(this, json);
             save();
             return true;
+        }
+
+        public String getDefaultVersionRegex() {
+            return ".+";
         }
 
         public String getScript() {
