@@ -55,7 +55,12 @@ public class StoreSCM extends SCM {
             taskListener.getLogger().println("No existing build. Scheduling a new one.");
             return PollingResult.BUILD_NOW;
         }
-        return PollingResult.NO_CHANGES;
+
+        final StoreRevisionState baseline = (StoreRevisionState) _baseline;
+
+        final StoreRevisionState current = baseline;
+
+        return new PollingResult(baseline, current, PollingResult.Change.NONE);
     }
 
     @Override
