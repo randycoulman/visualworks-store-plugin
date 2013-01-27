@@ -3,6 +3,22 @@
         <f:textbox/>
     </f:entry>
 
+    <f:entry title="Pundles" field="pundles">
+        <f:repeatable field="pundles" minimum="1" add="Add Pundle" header="Pundle">
+            <table style="width: 100%">
+                <f:entry title="Name:" field="name">
+                    <f:textbox/>
+                </f:entry>
+
+                <f:entry>
+                    <div align="right">
+                        <input type="button" value="Delete Pundle" class="repeatable-delete" style="margin-left: 1em"/>
+                    </div>
+                </f:entry>
+            </table>
+        </f:repeatable>
+    </f:entry>
+
     <f:entry title="Version Regex" field="versionRegex"
              description="Regular expression specifying which versions to consider.">
         <f:textbox default="${descriptor.defaultVersionRegex}"/>

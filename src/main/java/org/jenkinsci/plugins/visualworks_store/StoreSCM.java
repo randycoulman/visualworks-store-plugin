@@ -16,18 +16,25 @@ import org.kohsuke.stapler.StaplerRequest;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 public class StoreSCM extends SCM {
     private final String repositoryName;
+    private List<PundleSpec> pundles;
     private final String versionRegex;
     private final String minimumBlessingLevel;
     private final boolean generateParcelBuilderInputFile;
     private final String parcelBuilderInputFilename;
 
     @DataBoundConstructor
-    public StoreSCM(String repositoryName, String versionRegex, String minimumBlessingLevel,
+    public StoreSCM(String repositoryName, List<PundleSpec> pundles, String versionRegex, String minimumBlessingLevel,
                     boolean generateParcelBuilderInputFile, String parcelBuilderInputFilename) {
+        if (pundles == null) {
+            pundles = new ArrayList<PundleSpec>();
+        }
         this.repositoryName = repositoryName;
+        this.pundles = pundles;
         this.versionRegex = versionRegex;
         this.minimumBlessingLevel = minimumBlessingLevel;
         this.generateParcelBuilderInputFile = generateParcelBuilderInputFile;
@@ -61,6 +68,10 @@ public class StoreSCM extends SCM {
 
     public String getRepositoryName() {
         return repositoryName;
+    }
+
+    public List<PundleSpec> getPundles() {
+        return pundles;
     }
 
     public String getVersionRegex() {

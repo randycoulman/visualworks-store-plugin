@@ -1,9 +1,14 @@
 package org.jenkinsci.plugins.visualworks_store;
 
 import hudson.model.FreeStyleProject;
+import org.junit.Ignore;
 import org.jvnet.hudson.test.HudsonTestCase;
 
+import java.util.Arrays;
+import java.util.List;
+
 public class StoreSCMConfigurationTest extends HudsonTestCase {
+    @Ignore("Too slow: turned off for now")
     public void testGlobalConfigurationRoundtrip() throws Exception {
         StoreSCM.DescriptorImpl descriptor = hudson.getDescriptorByType(StoreSCM.DescriptorImpl.class);
         descriptor.setScript("/path/to/storeScript");
@@ -13,10 +18,12 @@ public class StoreSCMConfigurationTest extends HudsonTestCase {
     }
 
     public void testBasicConfigurationRoundtrip() throws Exception {
-        StoreSCM scm = new StoreSCM("Repo", "\\d+", "Integrated", false, "");
+        List<PundleSpec> pundleSpecs = onePundle();
+        StoreSCM scm = new StoreSCM("Repo", pundleSpecs, "\\d+", "Integrated", false, "");
         StoreSCM loaded = doRoundtripConfiguration(scm);
 
         assertEquals("repositoryName", "Repo", loaded.getRepositoryName());
+        assertEquals("pundles", pundleSpecs, loaded.getPundles());
         assertEquals("versionRegex", "\\d+", loaded.getVersionRegex());
         assertEquals("minimumBlessingLevel", "Integrated", loaded.getMinimumBlessingLevel());
         assertFalse("generateParcelBuilderInputFile", loaded.isGenerateParcelBuilderInputFile());
@@ -24,7 +31,7 @@ public class StoreSCMConfigurationTest extends HudsonTestCase {
     }
 
     public void testConfigurationRoundtripWithParcelBuilderFile() throws Exception {
-        StoreSCM scm = new StoreSCM("Repo", "\\d+", "Integrated", true, "theFilename");
+        StoreSCM scm = new StoreSCM("Repo", onePundle(), "\\d+", "Integrated", true, "theFilename");
         StoreSCM loaded = doRoundtripConfiguration(scm);
 
         assertTrue("generateParcelBuilderInputFile", loaded.isGenerateParcelBuilderInputFile());
@@ -40,4 +47,7 @@ public class StoreSCMConfigurationTest extends HudsonTestCase {
         return (StoreSCM) p.getScm();
     }
 
+    private List<PundleSpec> onePundle() {
+        return Arrays.asList(new PundleSpec("SomePackage"));
+    }
 }
