@@ -69,8 +69,10 @@ public class StoreSCM extends SCM {
         }
 
         final StoreRevisionState current = StoreRevisionState.parse(output);
+        boolean changes = current.hasChangedFrom(baseline, taskListener);
 
-        return new PollingResult(baseline, current, PollingResult.Change.NONE);
+        return new PollingResult(baseline, current,
+                changes ? PollingResult.Change.SIGNIFICANT : PollingResult.Change.NONE);
     }
 
     @Override
