@@ -1,6 +1,7 @@
 package org.jenkinsci.plugins.visualworks_store;
 
 
+import hudson.AbortException;
 import hudson.Extension;
 import hudson.FilePath;
 import hudson.Launcher;
@@ -17,8 +18,12 @@ import org.kohsuke.stapler.StaplerRequest;
 
 import java.io.File;
 import java.io.IOException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
+import java.util.TimeZone;
 
 public class StoreSCM extends SCM {
     private final String repositoryName;
@@ -76,8 +81,28 @@ public class StoreSCM extends SCM {
     }
 
     @Override
-    public boolean checkout(AbstractBuild<?, ?> abstractBuild, Launcher launcher, FilePath filePath, BuildListener buildListener, File file) throws IOException, InterruptedException {
-        return false;  //To change body of implemented methods use File | Settings | File Templates.
+    public boolean checkout(AbstractBuild<?, ?> build, Launcher launcher, FilePath filePath,
+                            BuildListener buildListener, File changeLogFile) throws IOException, InterruptedException {
+        AbstractBuild<?, ?> lastBuild = build.getPreviousBuild();
+        Calendar lastBuildTime = lastBuild == null ? midnight() : lastBuild.getTimestamp();
+        ArgumentListBuilder builder = prepareCheckoutCommand(getDescriptor().getScript(), lastBuildTime,
+                build.getTimestamp(), changeLogFile);
+
+        String output;
+        try {
+            output = new StoreCommandRunner().runCommand(builder, launcher, buildListener);
+        } catch (StoreCommandFailure storeCommandFailure) {
+            throw new AbortException("Error launching command");
+        }
+
+        if (!changeLogFile.exists()) {
+            createEmptyChangeLog(changeLogFile, buildListener, "log");
+        }
+
+        StoreRevisionState currentState = StoreRevisionState.parse(output);
+        build.addAction(currentState);
+
+        return true;
     }
 
     @Override
@@ -120,7 +145,7 @@ public class StoreSCM extends SCM {
         return parcelBuilderInputFilename;
     }
 
-    public ArgumentListBuilder preparePollingCommand(String storeScript) {
+    ArgumentListBuilder preparePollingCommand(String storeScript) {
         ArgumentListBuilder builder = new ArgumentListBuilder();
 
         builder.add(storeScript);
@@ -133,6 +158,41 @@ public class StoreSCM extends SCM {
         builder.add("-blessedAtLeast", minimumBlessingLevel);
 
         return builder;
+    }
+
+    ArgumentListBuilder prepareCheckoutCommand(String storeScript,
+                                               Calendar lastBuildTime, Calendar currentBuildTime,
+                                               File changeLogFile) {
+        DateFormat formatter = new SimpleDateFormat("MM/dd/yyyy HH:mm:ss.SSS");
+        formatter.setTimeZone(TimeZone.getTimeZone("GMT"));
+
+        ArgumentListBuilder builder = new ArgumentListBuilder();
+        builder.add(storeScript);
+        builder.add("-repository", repositoryName);
+        builder.add("-packages");
+        for (PundleSpec spec : pundles) {
+            builder.add(spec.getName());
+        }
+        builder.add("-versionRegex", versionRegex);
+        builder.add("-blessedAtLeast", minimumBlessingLevel);
+        builder.add("-since", formatter.format(lastBuildTime.getTime()));
+        builder.add("-now", formatter.format(currentBuildTime.getTime()));
+        builder.add("-changelog", changeLogFile.getPath());
+
+        if (generateParcelBuilderInputFile) {
+            builder.add("-parcelBuilderFile", parcelBuilderInputFilename);
+        }
+
+        return builder;
+    }
+
+    private Calendar midnight() {
+        final Calendar midnight = Calendar.getInstance(TimeZone.getTimeZone("GMT"));
+        midnight.set(Calendar.HOUR_OF_DAY, 0);
+        midnight.set(Calendar.MINUTE, 0);
+        midnight.set(Calendar.SECOND, 0);
+        midnight.set(Calendar.MILLISECOND, 0);
+        return midnight;
     }
 
     @Extension
