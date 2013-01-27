@@ -47,14 +47,15 @@ public class StoreSCM extends SCM {
     }
 
     @Override
-    public SCMRevisionState calcRevisionsFromBuild(AbstractBuild<?, ?> abstractBuild, Launcher launcher, TaskListener taskListener) throws IOException, InterruptedException {
-        // The revision state is added to the build as part of checkout(), so this will not be called.
-        return null;
-    }
-
-    @Override
-    protected PollingResult compareRemoteRevisionWith(AbstractProject<?, ?> abstractProject, Launcher launcher, FilePath filePath, TaskListener taskListener, SCMRevisionState scmRevisionState) throws IOException, InterruptedException {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+    protected PollingResult compareRemoteRevisionWith(AbstractProject<?, ?> project, Launcher launcher,
+                                                      FilePath workspace, TaskListener taskListener,
+                                                      SCMRevisionState _baseline)
+            throws IOException, InterruptedException {
+        if (project.getLastBuild() == null) {
+            taskListener.getLogger().println("No existing build. Scheduling a new one.");
+            return PollingResult.BUILD_NOW;
+        }
+        return PollingResult.NO_CHANGES;
     }
 
     @Override
@@ -65,6 +66,12 @@ public class StoreSCM extends SCM {
     @Override
     public ChangeLogParser createChangeLogParser() {
         return null;  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    @Override
+    public SCMRevisionState calcRevisionsFromBuild(AbstractBuild<?, ?> abstractBuild, Launcher launcher, TaskListener taskListener) throws IOException, InterruptedException {
+        // The revision state is added to the build as part of checkout(), so this will not be called.
+        return null;
     }
 
     @Override
