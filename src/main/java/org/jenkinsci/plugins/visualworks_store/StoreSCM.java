@@ -68,7 +68,7 @@ public class StoreSCM extends SCM {
             return PollingResult.NO_CHANGES;
         }
 
-        final StoreRevisionState current = baseline;
+        final StoreRevisionState current = StoreRevisionState.parse(output);
 
         return new PollingResult(baseline, current, PollingResult.Change.NONE);
     }
