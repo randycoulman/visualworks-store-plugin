@@ -30,7 +30,8 @@
     </f:entry>
 
     <f:block>
-        <table style="width: 100%">
+        <!-- HACK: Left margin here is to make up for a layout bug in optional blocks-->
+        <table style="width: 100%; margin-left: 2em;">
             <f:optionalBlock title="Generate input file for ParcelBuilder?"
                              field="generateParcelBuilderInputFile"
                              inline="true"
