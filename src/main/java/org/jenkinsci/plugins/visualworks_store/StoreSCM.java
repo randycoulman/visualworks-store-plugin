@@ -48,7 +48,8 @@ public class StoreSCM extends SCM {
 
     @Override
     public SCMRevisionState calcRevisionsFromBuild(AbstractBuild<?, ?> abstractBuild, Launcher launcher, TaskListener taskListener) throws IOException, InterruptedException {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+        // The revision state is added to the build as part of checkout(), so this will not be called.
+        return null;
     }
 
     @Override
