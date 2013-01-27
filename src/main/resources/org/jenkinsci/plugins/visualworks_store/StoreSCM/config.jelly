@@ -12,4 +12,17 @@
              description="Pundle versions with a lower blessing level will not be considered">
         <f:select default="${descriptor.defaultMinimumBlessingLevel}"/>
     </f:entry>
+
+    <f:block>
+        <table style="width: 100%">
+            <f:optionalBlock title="Generate input file for ParcelBuilder?"
+                             field="generateParcelBuilderInputFile"
+                             inline="true"
+                    >
+                <f:entry title="Filename" field="parcelBuilderInputFilename">
+                    <f:textbox default="${descriptor.defaultParcelBuilderInputFilename}"/>
+                </f:entry>
+            </f:optionalBlock>
+        </table>
+    </f:block>
 </j:jelly>

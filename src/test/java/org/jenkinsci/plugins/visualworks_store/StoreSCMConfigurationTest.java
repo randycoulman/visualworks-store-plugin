@@ -12,17 +12,32 @@ public class StoreSCMConfigurationTest extends HudsonTestCase {
         assertEquals("/path/to/storeScript", descriptor.getScript());
     }
 
-    public void testConfigRoundtrip() throws Exception {
+    public void testBasicConfigurationRoundtrip() throws Exception {
+        StoreSCM scm = new StoreSCM("Repo", "\\d+", "Integrated", false, "");
+        StoreSCM loaded = doRoundtripConfiguration(scm);
+
+        assertEquals("repositoryName", "Repo", loaded.getRepositoryName());
+        assertEquals("versionRegex", "\\d+", loaded.getVersionRegex());
+        assertEquals("minimumBlessingLevel", "Integrated", loaded.getMinimumBlessingLevel());
+        assertFalse("generateParcelBuilderInputFile", loaded.isGenerateParcelBuilderInputFile());
+        assertEquals("parcelBuilderInputFilename", "", loaded.getParcelBuilderInputFilename());
+    }
+
+    public void testConfigurationRoundtripWithParcelBuilderFile() throws Exception {
+        StoreSCM scm = new StoreSCM("Repo", "\\d+", "Integrated", true, "theFilename");
+        StoreSCM loaded = doRoundtripConfiguration(scm);
+
+        assertTrue("generateParcelBuilderInputFile", loaded.isGenerateParcelBuilderInputFile());
+        assertEquals("parcelBuilderInputFilename", "theFilename", loaded.getParcelBuilderInputFilename());
+    }
+
+    private StoreSCM doRoundtripConfiguration(StoreSCM original) throws Exception {
         FreeStyleProject p = createFreeStyleProject();
-        StoreSCM original = new StoreSCM("Repo", "\\d+", "Integrated");
         p.setScm(original);
 
         submit(createWebClient().getPage(p, "configure").getFormByName("config"));
 
-        StoreSCM loaded = (StoreSCM) p.getScm();
-        assertEquals("repositoryName", original.getRepositoryName(), loaded.getRepositoryName());
-        assertEquals("versionRegex", original.getVersionRegex(), loaded.getVersionRegex());
-        assertEquals("minimumBlessingLevel", original.getMinimumBlessingLevel(), loaded.getMinimumBlessingLevel());
+        return (StoreSCM) p.getScm();
     }
 
 }

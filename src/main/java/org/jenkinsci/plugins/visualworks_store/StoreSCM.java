@@ -21,12 +21,17 @@ public class StoreSCM extends SCM {
     private final String repositoryName;
     private final String versionRegex;
     private final String minimumBlessingLevel;
+    private final boolean generateParcelBuilderInputFile;
+    private final String parcelBuilderInputFilename;
 
     @DataBoundConstructor
-    public StoreSCM(String repositoryName, String versionRegex, String minimumBlessingLevel) {
+    public StoreSCM(String repositoryName, String versionRegex, String minimumBlessingLevel,
+                    boolean generateParcelBuilderInputFile, String parcelBuilderInputFilename) {
         this.repositoryName = repositoryName;
         this.versionRegex = versionRegex;
         this.minimumBlessingLevel = minimumBlessingLevel;
+        this.generateParcelBuilderInputFile = generateParcelBuilderInputFile;
+        this.parcelBuilderInputFilename = parcelBuilderInputFilename;
     }
 
     @Override
@@ -66,6 +71,14 @@ public class StoreSCM extends SCM {
         return minimumBlessingLevel;
     }
 
+    public boolean isGenerateParcelBuilderInputFile() {
+        return generateParcelBuilderInputFile;
+    }
+
+    public String getParcelBuilderInputFilename() {
+        return parcelBuilderInputFilename;
+    }
+
     @Extension
     public static final class DescriptorImpl extends SCMDescriptor<StoreSCM> {
         private String script;
@@ -87,6 +100,7 @@ public class StoreSCM extends SCM {
             return true;
         }
 
+        @SuppressWarnings("UnusedDeclaration")
         public ListBoxModel doFillMinimumBlessingLevelItems() {
             ListBoxModel items = new ListBoxModel();
             items.add("Broken");
@@ -104,12 +118,19 @@ public class StoreSCM extends SCM {
             return items;
         }
 
+        @SuppressWarnings("UnusedDeclaration")
         public String getDefaultVersionRegex() {
             return ".+";
         }
 
+        @SuppressWarnings("UnusedDeclaration")
         public String getDefaultMinimumBlessingLevel() {
             return "Development";
+        }
+
+        @SuppressWarnings("UnusedDeclaration")
+        public String getDefaultParcelBuilderInputFilename() {
+            return "parcelsToBuild";
         }
 
         public String getScript() {
