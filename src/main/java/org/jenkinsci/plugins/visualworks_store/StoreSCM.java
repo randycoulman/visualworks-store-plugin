@@ -9,6 +9,7 @@ import hudson.model.AbstractProject;
 import hudson.model.BuildListener;
 import hudson.model.TaskListener;
 import hudson.scm.*;
+import hudson.util.ArgumentListBuilder;
 import hudson.util.ListBoxModel;
 import net.sf.json.JSONObject;
 import org.kohsuke.stapler.DataBoundConstructor;
@@ -58,6 +59,15 @@ public class StoreSCM extends SCM {
 
         final StoreRevisionState baseline = (StoreRevisionState) _baseline;
 
+        ArgumentListBuilder builder = preparePollingCommand(getDescriptor().getScript());
+
+        String output;
+        try {
+            output = new StoreCommandRunner().runCommand(builder, launcher, taskListener);
+        } catch (StoreCommandFailure error) {
+            return PollingResult.NO_CHANGES;
+        }
+
         final StoreRevisionState current = baseline;
 
         return new PollingResult(baseline, current, PollingResult.Change.NONE);
@@ -106,6 +116,21 @@ public class StoreSCM extends SCM {
 
     public String getParcelBuilderInputFilename() {
         return parcelBuilderInputFilename;
+    }
+
+    public ArgumentListBuilder preparePollingCommand(String storeScript) {
+        ArgumentListBuilder builder = new ArgumentListBuilder();
+
+        builder.add(storeScript);
+        builder.add("-repository", repositoryName);
+        builder.add("-packages");
+        for (PundleSpec spec : pundles) {
+            builder.add(spec.getName());
+        }
+        builder.add("-versionRegex", versionRegex);
+        builder.add("-blessedAtLeast", minimumBlessingLevel);
+
+        return builder;
     }
 
     @Extension

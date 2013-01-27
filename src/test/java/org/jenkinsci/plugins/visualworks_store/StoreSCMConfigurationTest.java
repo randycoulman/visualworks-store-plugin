@@ -7,8 +7,8 @@ import org.jvnet.hudson.test.HudsonTestCase;
 import java.util.Arrays;
 import java.util.List;
 
+@Ignore("Too slow: turned off for now")
 public class StoreSCMConfigurationTest extends HudsonTestCase {
-    @Ignore("Too slow: turned off for now")
     public void testGlobalConfigurationRoundtrip() throws Exception {
         StoreSCM.DescriptorImpl descriptor = hudson.getDescriptorByType(StoreSCM.DescriptorImpl.class);
         descriptor.setScript("/path/to/storeScript");
