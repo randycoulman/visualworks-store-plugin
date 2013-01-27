@@ -42,6 +42,11 @@ public class StoreSCM extends SCM {
     }
 
     @Override
+    public boolean requiresWorkspaceForPolling() {
+        return false;
+    }
+
+    @Override
     public SCMRevisionState calcRevisionsFromBuild(AbstractBuild<?, ?> abstractBuild, Launcher launcher, TaskListener taskListener) throws IOException, InterruptedException {
         return null;  //To change body of implemented methods use File | Settings | File Templates.
     }
