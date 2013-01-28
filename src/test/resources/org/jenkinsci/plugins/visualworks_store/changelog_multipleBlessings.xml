@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<log>
+    <package action="modified" name="MyPundle" version="42">
+        <blessing timestamp="07/02/2012 15:40:19.123" user="User 1">
+            First comment.
+        </blessing>
+        <blessing timestamp="07/02/2012 14:32:28.456" user="User 2">
+            Comment the second.
+        </blessing>
+        <blessing timestamp="07/02/2012 09:42:57.789" user="User 1">
+            Other comment.
+        </blessing>
+    </package>
+</log>

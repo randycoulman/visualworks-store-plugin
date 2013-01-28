@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<log>
+    <package action="added" name="AddedPundle" version="42">
+        <blessing timestamp="07/02/2012 15:40:19.123" user="User 1">
+            First comment.
+        </blessing>
+    </package>
+    <package action="deleted" name="DeletedPundle"/>
+    <package action="modified" name="ModifiedPundle" version="58">
+        <blessing timestamp="07/02/2012 09:42:57.789" user="User 1">
+            Other comment.
+        </blessing>
+    </package>
+</log>

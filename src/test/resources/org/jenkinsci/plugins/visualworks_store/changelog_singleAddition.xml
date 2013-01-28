@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<log>
+    <package action="added" name="MyPundle" version="42">
+        <blessing timestamp="07/02/2012 15:40:19.123" user="committer">
+            Commit comment.
+        </blessing>
+    </package>
+</log>
