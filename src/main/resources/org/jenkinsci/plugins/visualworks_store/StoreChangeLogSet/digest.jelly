@@ -1,0 +1,18 @@
+<j:jelly xmlns:j="jelly:core">
+    <j:choose>
+        <j:when test="${it.emptySet}">
+            No changes.
+        </j:when>
+        <j:otherwise>
+            Changes
+            <ol>
+                <j:forEach var="entry" items="${it.logs}" varStatus="loop">
+                    <li>
+                        ${entry.msgAnnotated}
+                        (<a href="changes#detail${loop.index}">detail</a>)
+                    </li>
+                </j:forEach>
+            </ol>
+        </j:otherwise>
+    </j:choose>
+</j:jelly>

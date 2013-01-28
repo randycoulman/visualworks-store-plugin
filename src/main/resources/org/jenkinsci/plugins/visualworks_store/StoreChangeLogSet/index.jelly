@@ -1,0 +1,34 @@
+<j:jelly xmlns:j="jelly:core" xmlns:t="/lib/hudson">
+    <h2>Summary</h2>
+    <ol>
+        <j:forEach var="entry" items="${it.logs}" varStatus="loop">
+            <li>${entry.msgAnnotated} (<a href="#detail${loop.index}">details</a>)
+            </li>
+        </j:forEach>
+    </ol>
+    <table class="pane" style="border: none">
+        <j:forEach var="entry" items="${it.logs}" varStatus="loop">
+            <tr class="pane">
+                <td colspan="2" class="changeset">
+                    <a name="detail${loop.index}"/>
+                    <div class="changeset-message">
+                        <b>
+                            Commit by
+                            <a href="${rootURL}/${entry.author.url}/">${entry.author}</a>
+                            at ${entry.formattedTimestamp}
+                        </b>
+                        <pre>${entry.fullCommentAnnotated}</pre>
+                    </div>
+                </td>
+            </tr>
+            <j:forEach var="p" items="${entry.affectedFiles}">
+                <tr>
+                    <td width="16">
+                        <t:editTypeIcon type="${p.editType}"/>
+                    </td>
+                    <td>${p.path}</td>
+                </tr>
+            </j:forEach>
+        </j:forEach>
+    </table>
+</j:jelly>
