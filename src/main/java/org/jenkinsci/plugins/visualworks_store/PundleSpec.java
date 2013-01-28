@@ -5,7 +5,7 @@ import hudson.model.AbstractDescribableImpl;
 import hudson.model.Descriptor;
 import org.kohsuke.stapler.DataBoundConstructor;
 
-class PundleSpec extends AbstractDescribableImpl<PundleSpec> {
+public class PundleSpec extends AbstractDescribableImpl<PundleSpec> {
     private String name;
 
     @DataBoundConstructor
