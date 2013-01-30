@@ -20,14 +20,20 @@ public class StoreRevisionStateTest {
     }
 
     @Test
+    public void preservesRepositoryName() {
+        StoreRevisionState state = StoreRevisionState.parse("repo", "");
+        assertEquals("repositoryName", "repo", state.getRepositoryName());
+    }
+
+    @Test
     public void parsesEmptyInput() {
-        StoreRevisionState state = StoreRevisionState.parse("");
+        StoreRevisionState state = StoreRevisionState.parse("repo", "");
         assertTrue("should be empty", state.isEmpty());
     }
 
     @Test
     public void parsesSinglePackageLine() {
-        StoreRevisionState state = StoreRevisionState.parse("StorePackage\t\"MyPackage\"\tsome version");
+        StoreRevisionState state = StoreRevisionState.parse("repo", "StorePackage\t\"MyPackage\"\tsome version");
         assertEquals("package count", 1, state.size());
         assertEquals("version", "some version", state.versionFor("MyPackage"));
     }
@@ -36,7 +42,7 @@ public class StoreRevisionStateTest {
     public void parsesMultiplePackageLines() {
         String input = "StorePackage\t\"PackageA\"\tversion A\nStorePackage\t\"PackageB\"\tversion B";
 
-        StoreRevisionState state = StoreRevisionState.parse(input);
+        StoreRevisionState state = StoreRevisionState.parse("repo", input);
 
         assertEquals("package count", 2, state.size());
         assertEquals("PackageA version", "version A", state.versionFor("PackageA"));
@@ -47,7 +53,7 @@ public class StoreRevisionStateTest {
     public void ignoresExtraWhitespaceWhenParsing() {
         String input = "           StorePackage       \t                \"PackageA\"      \t       version A      \n\n\n\n     StorePackage     \t  \"PackageB\"   \t     version B     ";
 
-        StoreRevisionState state = StoreRevisionState.parse(input);
+        StoreRevisionState state = StoreRevisionState.parse("repo", input);
 
         assertEquals("package count", 2, state.size());
         assertEquals("PackageA version", "version A", state.versionFor("PackageA"));
@@ -56,13 +62,13 @@ public class StoreRevisionStateTest {
 
     @Test
     public void parsesPundleNamesWithEmbeddedSpaces() {
-        StoreRevisionState state = StoreRevisionState.parse("StorePackage\t\"Package With Spaces\"\tsome version");
+        StoreRevisionState state = StoreRevisionState.parse("repo", "StorePackage\t\"Package With Spaces\"\tsome version");
         assertTrue("package not found", state.containsPundle("Package With Spaces"));
     }
 
     @Test
     public void parsesPundleNamesWithNoSurroundingQuotes() {
-        StoreRevisionState state = StoreRevisionState.parse("StorePackage\tMyPackage\tsome version");
+        StoreRevisionState state = StoreRevisionState.parse("repo", "StorePackage\tMyPackage\tsome version");
         assertTrue("package not found", state.containsPundle("MyPackage"));
     }
 
@@ -72,7 +78,7 @@ public class StoreRevisionStateTest {
 
     @Test
     public void returnsNullVersionIfPackageNotFound() {
-        StoreRevisionState state = new StoreRevisionState();
+        StoreRevisionState state = new StoreRevisionState("repo");
 
         assertNull("should have return null version", state.versionFor("Not There"));
     }
@@ -117,7 +123,7 @@ public class StoreRevisionStateTest {
     @Test
     public void hasChangedWithMissingPackage() {
         StoreRevisionState baseline = makeBaselineState();
-        StoreRevisionState missingPackage = new StoreRevisionState();
+        StoreRevisionState missingPackage = new StoreRevisionState("repo");
 
         assertTrue("should have changed", missingPackage.hasChangedFrom(baseline, listener));
         assertLogContains("Package deleted: Package 1\n");
@@ -125,7 +131,7 @@ public class StoreRevisionStateTest {
     }
 
     private StoreRevisionState makeBaselineState() {
-        StoreRevisionState state = new StoreRevisionState();
+        StoreRevisionState state = new StoreRevisionState("repo");
         state.addPundle("Package 1", "1");
         state.addPundle("Package 2", "2");
         return state;

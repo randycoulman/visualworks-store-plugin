@@ -73,7 +73,7 @@ public class StoreSCM extends SCM {
             return PollingResult.NO_CHANGES;
         }
 
-        final StoreRevisionState current = StoreRevisionState.parse(output);
+        final StoreRevisionState current = StoreRevisionState.parse(repositoryName, output);
         boolean changes = current.hasChangedFrom(baseline, taskListener);
 
         return new PollingResult(baseline, current,
@@ -99,7 +99,7 @@ public class StoreSCM extends SCM {
             createEmptyChangeLog(changeLogFile, buildListener, "log");
         }
 
-        StoreRevisionState currentState = StoreRevisionState.parse(output);
+        StoreRevisionState currentState = StoreRevisionState.parse(repositoryName, output);
         build.addAction(currentState);
 
         return true;

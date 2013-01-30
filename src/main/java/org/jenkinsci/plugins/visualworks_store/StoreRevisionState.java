@@ -9,10 +9,11 @@ import java.util.Map;
 import java.util.Set;
 
 class StoreRevisionState extends SCMRevisionState {
-    private Map<String, String> pundleVersions = new HashMap<String, String>();
+    private final String repositoryName;
+    private Map<String, String> pundleVersions;
 
-    public static StoreRevisionState parse(String output) {
-        StoreRevisionState state = new StoreRevisionState();
+    public static StoreRevisionState parse(String repositoryName, String output) {
+        StoreRevisionState state = new StoreRevisionState(repositoryName);
 
         String[] lines = output.split("\\n");
         for (String line : lines) {
@@ -22,6 +23,11 @@ class StoreRevisionState extends SCMRevisionState {
             state.addPundle(stripQuotes(tokens[1].trim()), tokens[2].trim());
         }
         return state;
+    }
+
+    public StoreRevisionState(String repositoryName) {
+        this.repositoryName = repositoryName;
+        this.pundleVersions = new HashMap<String, String>();
     }
 
     private static String stripQuotes(String s) {
@@ -81,5 +87,9 @@ class StoreRevisionState extends SCMRevisionState {
 
     public void changeVersion(String pundleName, String newVersion) {
         pundleVersions.put(pundleName, newVersion);
+    }
+
+    public String getRepositoryName() {
+        return repositoryName;
     }
 }
