@@ -57,12 +57,27 @@ public class StoreSCM extends SCM {
                                                       FilePath workspace, TaskListener taskListener,
                                                       SCMRevisionState _baseline)
             throws IOException, InterruptedException {
-        if (project.getLastBuild() == null) {
+        final AbstractBuild<?, ?> lastBuild = project.getLastBuild();
+        if (lastBuild == null) {
             taskListener.getLogger().println("No existing build. Scheduling a new one.");
             return PollingResult.BUILD_NOW;
         }
 
-        final StoreRevisionState baseline = (StoreRevisionState) _baseline;
+        StoreRevisionState baseline = (StoreRevisionState) _baseline;
+
+        // If the Multiple SCMs plugin is being used to check different Store repositories,
+        // we may be passed a baseline for a different repository.  Handle that by going to
+        // look for the correct baseline in the build.
+        //
+        // In the normal case (only one repository), we will have the correct baseline and
+        // don't need to do the extra work.
+        if (!isRelevantRevisionState(baseline)) {
+            baseline = findCorrectBaseline(lastBuild);
+            if (baseline == null) {
+                taskListener.getLogger().println("New repository. Scheduling a new build.");
+                return PollingResult.BUILD_NOW;
+            }
+        }
 
         ArgumentListBuilder builder = preparePollingCommand(getDescriptor().getScript());
 
@@ -111,9 +126,29 @@ public class StoreSCM extends SCM {
     }
 
     @Override
-    public SCMRevisionState calcRevisionsFromBuild(AbstractBuild<?, ?> abstractBuild, Launcher launcher, TaskListener taskListener) throws IOException, InterruptedException {
+    public SCMRevisionState calcRevisionsFromBuild(AbstractBuild<?, ?> abstractBuild, Launcher launcher,
+                                                   TaskListener taskListener)
+            throws IOException, InterruptedException {
         // The revision state is added to the build as part of checkout(), so this will not be called.
         return null;
+    }
+
+    private StoreRevisionState findCorrectBaseline(AbstractBuild<?, ?> lastBuild) {
+        for (AbstractBuild<?, ?> build = lastBuild; build != null; build = lastBuild.getPreviousBuild()) {
+            List<StoreRevisionState> revisionStates = build.getActions(StoreRevisionState.class);
+            for (StoreRevisionState state : revisionStates) {
+                if (isRelevantRevisionState(state)) {
+                    return state;
+                }
+            }
+
+            if (!revisionStates.isEmpty()) return null;
+        }
+        return null;
+    }
+
+    private boolean isRelevantRevisionState(StoreRevisionState state) {
+        return state != null && state.getRepositoryName().equals(repositoryName);
     }
 
     @Override
