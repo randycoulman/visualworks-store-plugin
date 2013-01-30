@@ -83,7 +83,7 @@ public class StoreSCM extends SCM {
 
         String output;
         try {
-            output = new StoreCommandRunner().runCommand(builder, launcher, taskListener);
+            output = new StoreCommandRunner().runCommand(builder, launcher, workspace, taskListener);
         } catch (StoreCommandFailure error) {
             return PollingResult.NO_CHANGES;
         }
@@ -96,7 +96,7 @@ public class StoreSCM extends SCM {
     }
 
     @Override
-    public boolean checkout(AbstractBuild<?, ?> build, Launcher launcher, FilePath filePath,
+    public boolean checkout(AbstractBuild<?, ?> build, Launcher launcher, FilePath workspace,
                             BuildListener buildListener, File changeLogFile) throws IOException, InterruptedException {
         AbstractBuild<?, ?> lastBuild = build.getPreviousBuild();
         Calendar lastBuildTime = lastBuild == null ? midnight() : lastBuild.getTimestamp();
@@ -105,7 +105,7 @@ public class StoreSCM extends SCM {
 
         String output;
         try {
-            output = new StoreCommandRunner().runCommand(builder, launcher, buildListener);
+            output = new StoreCommandRunner().runCommand(builder, launcher, workspace, buildListener);
         } catch (StoreCommandFailure storeCommandFailure) {
             throw new AbortException("Error launching command");
         }
