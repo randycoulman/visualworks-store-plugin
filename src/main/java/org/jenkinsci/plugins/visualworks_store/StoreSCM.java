@@ -1,10 +1,7 @@
 package org.jenkinsci.plugins.visualworks_store;
 
 
-import hudson.AbortException;
-import hudson.Extension;
-import hudson.FilePath;
-import hudson.Launcher;
+import hudson.*;
 import hudson.model.AbstractBuild;
 import hudson.model.AbstractProject;
 import hudson.model.BuildListener;
@@ -232,7 +229,8 @@ public class StoreSCM extends SCM {
 
     @Extension
     public static final class DescriptorImpl extends SCMDescriptor<StoreSCM> {
-        private String script;
+        @CopyOnWrite
+        private volatile StoreScript[] storeScripts = new StoreScript[0];
 
         public DescriptorImpl() {
             super(StoreSCM.class, null);
@@ -246,7 +244,8 @@ public class StoreSCM extends SCM {
 
         @Override
         public boolean configure(StaplerRequest req, JSONObject json) throws FormException {
-            req.bindJSON(this, json);
+            final List<StoreScript> scriptList = req.bindParametersToList(StoreScript.class, "script.");
+            storeScripts = scriptList.toArray(new StoreScript[scriptList.size()]);
             save();
             return true;
         }
@@ -284,12 +283,18 @@ public class StoreSCM extends SCM {
             return "parcelsToBuild";
         }
 
+        // Temporary backwards compatibility
         public String getScript() {
-            return script;
+            return storeScripts[0].getPath();
         }
 
-        public void setScript(String script) {
-            this.script = script;
+        public StoreScript[] getStoreScripts() {
+            return storeScripts;
+        }
+
+        public void setStoreScripts(StoreScript... scripts) {
+            storeScripts = scripts;
+            save();
         }
     }
 }

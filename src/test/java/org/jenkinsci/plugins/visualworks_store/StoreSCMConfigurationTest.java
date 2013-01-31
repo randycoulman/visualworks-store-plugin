@@ -10,10 +10,18 @@ import java.util.List;
 public class StoreSCMConfigurationTest extends HudsonTestCase {
     public void testGlobalConfigurationRoundtrip() throws Exception {
         StoreSCM.DescriptorImpl descriptor = hudson.getDescriptorByType(StoreSCM.DescriptorImpl.class);
-        descriptor.setScript("/path/to/storeScript");
+
+        descriptor.setStoreScripts(new StoreScript("7.7.1", "/path/to/script-7.7.1"),
+                new StoreScript("7.9.1", "/path/to/script-7.9.1"));
 
         submit(createWebClient().goTo("configure").getFormByName("config"));
-        assertEquals("/path/to/storeScript", descriptor.getScript());
+
+        StoreScript[] scripts = descriptor.getStoreScripts();
+        assertEquals("installation count", 2, scripts.length);
+        assertEquals("first script name", "7.7.1", scripts[0].getName());
+        assertEquals("first script path", "/path/to/script-7.7.1", scripts[0].getPath());
+        assertEquals("second script name", "7.9.1", scripts[1].getName());
+        assertEquals("second script path", "/path/to/script-7.9.1", scripts[1].getPath());
     }
 
     public void testBasicConfigurationRoundtrip() throws Exception {
