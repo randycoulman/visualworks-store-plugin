@@ -62,6 +62,19 @@ public class StoreSCMConfigurationTest extends HudsonTestCase {
                 loaded.getParcelBuilderInputFilename());
     }
 
+    public void testLookupStoreScript() {
+        StoreSCM.DescriptorImpl descriptor =
+                hudson.getDescriptorByType(StoreSCM.DescriptorImpl.class);
+        final StoreScript script = new StoreScript("otherScript", "otherPath");
+        descriptor.setStoreScripts(new StoreScript("theScript", "path"),
+                script);
+
+        StoreSCM scm = new StoreSCM("otherScript", "Repo", onePundle(),
+                "\\d+", "Development", false, "");
+
+        assertEquals(script, scm.getStoreScript());
+    }
+
     private StoreSCM doRoundtripConfiguration(StoreSCM original) throws Exception {
         FreeStyleProject p = createFreeStyleProject();
         p.setScm(original);

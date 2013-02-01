@@ -81,7 +81,12 @@ public class StoreSCM extends SCM {
             }
         }
 
-        ArgumentListBuilder builder = preparePollingCommand(getDescriptor().getScript());
+        StoreScript storeScript = getStoreScript();
+        if (storeScript == null) {
+            taskListener.fatalError("No store script specified");
+            return PollingResult.NO_CHANGES;
+        }
+        ArgumentListBuilder builder = preparePollingCommand(storeScript.getPath());
 
         String output;
         try {
@@ -102,8 +107,15 @@ public class StoreSCM extends SCM {
                             BuildListener buildListener, File changeLogFile) throws IOException, InterruptedException {
         AbstractBuild<?, ?> lastBuild = build.getPreviousBuild();
         Calendar lastBuildTime = lastBuild == null ? midnight() : lastBuild.getTimestamp();
-        ArgumentListBuilder builder = prepareCheckoutCommand(getDescriptor().getScript(), lastBuildTime,
-                build.getTimestamp(), changeLogFile);
+
+        StoreScript storeScript = getStoreScript();
+        if (storeScript == null) {
+            buildListener.fatalError("No store script specified");
+            return false;
+        }
+
+        ArgumentListBuilder builder = prepareCheckoutCommand(storeScript.getPath(),
+                lastBuildTime, build.getTimestamp(), changeLogFile);
 
         String output;
         try {
@@ -236,6 +248,15 @@ public class StoreSCM extends SCM {
         return midnight;
     }
 
+    StoreScript getStoreScript() {
+        for (StoreScript script : getDescriptor().getStoreScripts()) {
+            if (script.getName().equals(scriptName)) {
+                return script;
+            }
+        }
+        return null;
+    }
+
     @Extension
     public static final class DescriptorImpl extends SCMDescriptor<StoreSCM> {
         @CopyOnWrite
@@ -290,11 +311,6 @@ public class StoreSCM extends SCM {
         @SuppressWarnings("UnusedDeclaration")
         public String getDefaultParcelBuilderInputFilename() {
             return "parcelsToBuild";
-        }
-
-        // Temporary backwards compatibility
-        public String getScript() {
-            return storeScripts[0].getPath();
         }
 
         public StoreScript[] getStoreScripts() {

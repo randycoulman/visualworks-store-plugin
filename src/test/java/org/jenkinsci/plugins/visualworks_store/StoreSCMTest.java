@@ -26,7 +26,8 @@ public class StoreSCMTest {
     @Test
     public void preparesPollingCommandForSinglePundle() {
         List<PundleSpec> pundles = Arrays.asList(new PundleSpec("Package"));
-        StoreSCM scm = new StoreSCM("Default", "Repo", pundles, "\\d+", "Development", false, "");
+        StoreSCM scm = new StoreSCM("Default", "Repo", pundles, "\\d+",
+                "Development", false, "");
 
         ArgumentListBuilder builder = scm.preparePollingCommand("storeScript");
 
