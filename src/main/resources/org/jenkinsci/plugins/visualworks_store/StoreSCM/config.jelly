@@ -1,5 +1,17 @@
 <j:jelly xmlns:j="jelly:core" xmlns:f="/lib/form">
-  <f:entry title="Repository Name" field="repositoryName" description="Name of the Store repository to check.">
+  <f:entry title="Store Script" field="scriptName">
+    <select name="scriptName">
+      <j:forEach var="script" items="${descriptor.storeScripts}">
+        <f:option value="${script.name}"
+                  selected="${instance.scriptName == script.name}">
+          ${script.name}
+        </f:option>
+      </j:forEach>
+    </select>
+  </f:entry>
+
+  <f:entry title="Repository Name" field="repositoryName"
+           description="Name of the Store repository to check.">
     <f:textbox/>
   </f:entry>
 
@@ -12,7 +24,8 @@
 
         <f:entry>
           <div align="right">
-            <input type="button" value="Delete Pundle" class="repeatable-delete" style="margin-left: 1em"/>
+            <input type="button" value="Delete Pundle" class="repeatable-delete"
+                   style="margin-left: 1em"/>
           </div>
         </f:entry>
       </table>

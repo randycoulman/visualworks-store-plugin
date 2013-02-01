@@ -29,13 +29,18 @@ public class StoreSCM extends SCM {
     private final String minimumBlessingLevel;
     private final boolean generateParcelBuilderInputFile;
     private final String parcelBuilderInputFilename;
+    private String scriptName;
 
     @DataBoundConstructor
-    public StoreSCM(String repositoryName, List<PundleSpec> pundles, String versionRegex, String minimumBlessingLevel,
-                    boolean generateParcelBuilderInputFile, String parcelBuilderInputFilename) {
+    public StoreSCM(String scriptName, String repositoryName,
+                    List<PundleSpec> pundles, String versionRegex,
+                    String minimumBlessingLevel,
+                    boolean generateParcelBuilderInputFile,
+                    String parcelBuilderInputFilename) {
         if (pundles == null) {
             pundles = new ArrayList<PundleSpec>();
         }
+        this.scriptName = scriptName;
         this.repositoryName = repositoryName;
         this.pundles = pundles;
         this.versionRegex = versionRegex;
@@ -151,6 +156,10 @@ public class StoreSCM extends SCM {
     @Override
     public DescriptorImpl getDescriptor() {
         return (DescriptorImpl) super.getDescriptor();
+    }
+
+    public String getScriptName() {
+        return scriptName;
     }
 
     public String getRepositoryName() {
