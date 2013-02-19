@@ -85,7 +85,8 @@ public class StoreChangeLogEntryTest {
         entry.addPundle(editedPundle);
         entry.addPundle(deletedPundle);
 
-        List<String> expected = Arrays.asList("AddedPundle (1)", "EditedPundle (42)", "DeletedPundle");
+        List<String> expected = Arrays.asList(addedPundle.getDescriptor(),
+                editedPundle.getDescriptor(), deletedPundle.getDescriptor());
         assertTrue(entry.getAffectedPaths().containsAll(expected));
     }
 
@@ -100,11 +101,11 @@ public class StoreChangeLogEntryTest {
 
         assertEquals(2, files.length);
         ChangeLogSet.AffectedFile file1 = files[0];
-        assertEquals("AddedPundle (1)", file1.getPath());
+        assertEquals(addedPundle.getDescriptor(), file1.getPath());
         assertEquals(EditType.ADD, file1.getEditType());
 
         ChangeLogSet.AffectedFile file2 = files[1];
-        assertEquals("EditedPundle (42)", file2.getPath());
+        assertEquals(editedPundle.getDescriptor(), file2.getPath());
         assertEquals(EditType.EDIT, file2.getEditType());
     }
 }

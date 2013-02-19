@@ -39,7 +39,8 @@ public class StoreChangeLogParserTest {
         assertEquals("committer should be empty", "", entry.getCommitter());
         assertEquals("entry timestamp should be zero", 0, entry.getTimestamp());
 
-        assertTrue(entry.getAffectedPaths().contains("MyPundle"));
+        ChangedPundle pundle = new ChangedPundle("deleted", "MyPundle");
+        assertTrue(entry.getAffectedPaths().contains(pundle.getDescriptor()));
     }
 
     @Test
@@ -59,7 +60,8 @@ public class StoreChangeLogParserTest {
         assertEquals("committer", "committer", entry.getCommitter());
         assertEquals("timestamp", expected.getTime().getTime(), entry.getTimestamp());
 
-        assertTrue(entry.getAffectedPaths().contains("MyPundle (42)"));
+        ChangedPundle pundle = new ChangedPundle("added", "MyPundle", "42");
+        assertTrue(entry.getAffectedPaths().contains(pundle.getDescriptor()));
     }
 
     @Test
@@ -77,7 +79,8 @@ public class StoreChangeLogParserTest {
         assertEquals("second comment", "Comment the second.", entries.get(1).getMsg());
         assertEquals("third comment", "Other comment.", entries.get(2).getMsg());
 
-        String expectedPath = "MyPundle (42)";
+        ChangedPundle pundle = new ChangedPundle("edited", "MyPundle", "42");
+        String expectedPath = pundle.getDescriptor();
         assertTrue("first paths", entries.get(0).getAffectedPaths().contains(expectedPath));
         assertTrue("second paths", entries.get(1).getAffectedPaths().contains(expectedPath));
         assertTrue("third paths", entries.get(2).getAffectedPaths().contains(expectedPath));
@@ -94,9 +97,16 @@ public class StoreChangeLogParserTest {
         assertEquals("second comment", "Pundles no longer used", entries.get(1).getMsg());
         assertEquals("third comment", "Other comment.", entries.get(2).getMsg());
 
-        assertTrue("first paths", entries.get(0).getAffectedPaths().contains("AddedPundle (42)"));
-        assertTrue("second paths", entries.get(1).getAffectedPaths().contains("DeletedPundle"));
-        assertTrue("third paths", entries.get(2).getAffectedPaths().contains("ModifiedPundle (58)"));
+        ChangedPundle addedPundle = new ChangedPundle("added", "AddedPundle", "42");
+        ChangedPundle deletedPundle = new ChangedPundle("deleted", "DeletedPundle");
+        ChangedPundle modifiedPundle = new ChangedPundle("edited", "ModifiedPundle", "58");
+
+        assertTrue("first paths", entries.get(0).getAffectedPaths().contains
+                (addedPundle.getDescriptor()));
+        assertTrue("second paths", entries.get(1).getAffectedPaths().contains
+                (deletedPundle.getDescriptor()));
+        assertTrue("third paths", entries.get(2).getAffectedPaths().contains
+                (modifiedPundle.getDescriptor()));
     }
 
     @Test
@@ -117,12 +127,22 @@ public class StoreChangeLogParserTest {
         assertEquals("timestamp of deleted entry", 0, entries.get(1).getTimestamp());
         assertEquals("timestamp should be latest of merged entries", expectedTimestamp.getTime().getTime(), entries.get(2).getTimestamp());
 
-        assertTrue("first paths", entries.get(0).getAffectedPaths().contains("AddedPundle (42)"));
+        ChangedPundle addedPundle = new ChangedPundle("added", "AddedPundle", "42");
+        ChangedPundle deletedPundle1 = new ChangedPundle("deleted", "DeletedPundle1");
+        ChangedPundle deletedPundle2 = new ChangedPundle("deleted", "DeletedPundle2");
+        ChangedPundle modifiedPundle1 = new ChangedPundle("edited", "ModifiedPundle1", "58");
+        ChangedPundle modifiedPundle2 = new ChangedPundle("edited", "ModifiedPundle2", "123");
 
-        List<String> expectedPaths1 = Arrays.asList("DeletedPundle1", "DeletedPundle2");
+        assertTrue("first paths", entries.get(0).getAffectedPaths().contains
+                (addedPundle.getDescriptor()));
+
+        List<String> expectedPaths1 = Arrays.asList(deletedPundle1.getDescriptor(),
+                deletedPundle2.getDescriptor());
         assertTrue("second paths", entries.get(1).getAffectedPaths().containsAll(expectedPaths1));
 
-        List<String> expectedPaths2 = Arrays.asList("ModifiedPundle1 (58)", "ModifiedPundle2 (123)");
+        List<String> expectedPaths2 =
+                Arrays.asList(modifiedPundle1.getDescriptor(),
+                        modifiedPundle2.getDescriptor());
         assertTrue("third paths", entries.get(2).getAffectedPaths().containsAll(expectedPaths2));
     }
 }
