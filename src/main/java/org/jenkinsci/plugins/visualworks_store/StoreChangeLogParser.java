@@ -30,12 +30,22 @@ public class StoreChangeLogParser extends ChangeLogParser {
         try {
             Document document = reader.read(file);
             Element root = document.getRootElement();
-            for (Object eachPundle : root.elements("package")) {
+            for (Object eachPundle : root.elements()) {
                 Element pundle = (Element) eachPundle;
+                PundleType pundleType;
+                if (pundle.getName().equals("package")) {
+                    pundleType = PundleType.PACKAGE;
+                } else if (pundle.getName().equals("bundle")) {
+                    pundleType = PundleType.BUNDLE;
+                } else {
+                    // Unknown element type; skip it
+                    continue;
+                }
                 List blessings = pundle.elements("blessing");
 
                 ChangedPundle changedPundle = new ChangedPundle(pundle.attributeValue("action"),
-                        PundleType.PACKAGE, pundle.attributeValue("name"), pundle.attributeValue("version"));
+                        pundleType, pundle.attributeValue("name"),
+                        pundle.attributeValue("version"));
 
                 if (blessings.isEmpty()) {
                     newDeletion(changedPundle);

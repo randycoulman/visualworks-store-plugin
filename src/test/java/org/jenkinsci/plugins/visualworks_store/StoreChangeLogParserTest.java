@@ -90,8 +90,9 @@ public class StoreChangeLogParserTest {
     }
 
     @Test
-    public void parsesMultiplePackagesWithDifferentCommentsAsMultipleEntries() throws IOException, SAXException, URISyntaxException {
-        StoreChangeLogSet changes = parse("changelog_multiplePackages.xml");
+    public void parsesMultiplePundlesWithDifferentCommentsAsMultipleEntries()
+            throws IOException, SAXException, URISyntaxException {
+        StoreChangeLogSet changes = parse("changelog_multiplePundles.xml");
         List<StoreChangeLogEntry> entries = changes.getEntries();
 
         assertEquals("entry count", 3, entries.size());
@@ -105,7 +106,7 @@ public class StoreChangeLogParserTest {
         ChangedPundle deletedPundle = new ChangedPundle("deleted",
                 PundleType.PACKAGE, "DeletedPundle");
         ChangedPundle modifiedPundle = new ChangedPundle("edited",
-                PundleType.PACKAGE, "ModifiedPundle", "58");
+                PundleType.BUNDLE, "ModifiedPundle", "58");
 
         assertTrue("first paths", entries.get(0).getAffectedPaths().contains
                 (addedPundle.getDescriptor()));
@@ -136,11 +137,11 @@ public class StoreChangeLogParserTest {
         ChangedPundle addedPundle = new ChangedPundle("added",
                 PundleType.PACKAGE, "AddedPundle", "42");
         ChangedPundle deletedPundle1 = new ChangedPundle("deleted",
-                PundleType.PACKAGE, "DeletedPundle1");
+                PundleType.BUNDLE, "DeletedPundle1");
         ChangedPundle deletedPundle2 = new ChangedPundle("deleted",
                 PundleType.PACKAGE, "DeletedPundle2");
         ChangedPundle modifiedPundle1 = new ChangedPundle("edited",
-                PundleType.PACKAGE, "ModifiedPundle1", "58");
+                PundleType.BUNDLE, "ModifiedPundle1", "58");
         ChangedPundle modifiedPundle2 = new ChangedPundle("edited",
                 PundleType.PACKAGE, "ModifiedPundle2", "123");
 
