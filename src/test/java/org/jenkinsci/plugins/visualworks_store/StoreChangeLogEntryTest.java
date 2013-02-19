@@ -22,9 +22,10 @@ public class StoreChangeLogEntryTest {
     @Before
     public void setUp() {
         entry = new StoreChangeLogEntry("committer", timestampString, "blessing comment");
-        addedPundle = new ChangedPundle("added", "AddedPundle", "1");
-        editedPundle = new ChangedPundle("edited", "EditedPundle", "42");
-        deletedPundle = new ChangedPundle("deleted", "DeletedPundle");
+        addedPundle = new ChangedPundle("added", PundleType.PACKAGE, "AddedPundle", "1");
+        editedPundle = new ChangedPundle("edited", PundleType.BUNDLE,
+                "EditedPundle", "42");
+        deletedPundle = new ChangedPundle("deleted", PundleType.PACKAGE, "DeletedPundle");
     }
 
     @Test

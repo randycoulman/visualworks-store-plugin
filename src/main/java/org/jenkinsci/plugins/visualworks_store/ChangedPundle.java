@@ -5,17 +5,19 @@ import hudson.scm.EditType;
 
 public class ChangedPundle implements ChangeLogSet.AffectedFile {
     private EditType editType;
+    private PundleType pundleType;
     private String name;
     private String version;
 
-    public ChangedPundle(String action, String name, String version) {
+    public ChangedPundle(String action, PundleType pundleType, String name, String version) {
         this.editType = toEditType(action);
+        this.pundleType = pundleType;
         this.name = name;
         this.version = version;
     }
 
-    public ChangedPundle(String action, String name) {
-        this(action, name, null);
+    public ChangedPundle(String action, PundleType pundleType, String name) {
+        this(action, pundleType, name, null);
     }
 
     private EditType toEditType(String action) {
@@ -42,9 +44,10 @@ public class ChangedPundle implements ChangeLogSet.AffectedFile {
     }
 
     public String getDescriptor() {
-        if (isDeletion()) return name;
+        String descriptor = pundleType.getName() + " " + name;
+        if (isDeletion()) return descriptor;
 
-        return name + " (" + version + ")";
+        return descriptor + " (" + version + ")";
     }
 
     private boolean isDeletion() {

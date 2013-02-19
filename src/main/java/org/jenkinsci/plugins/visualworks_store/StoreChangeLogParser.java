@@ -35,7 +35,7 @@ public class StoreChangeLogParser extends ChangeLogParser {
                 List blessings = pundle.elements("blessing");
 
                 ChangedPundle changedPundle = new ChangedPundle(pundle.attributeValue("action"),
-                        pundle.attributeValue("name"), pundle.attributeValue("version"));
+                        PundleType.PACKAGE, pundle.attributeValue("name"), pundle.attributeValue("version"));
 
                 if (blessings.isEmpty()) {
                     newDeletion(changedPundle);
