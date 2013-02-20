@@ -12,7 +12,7 @@ public class PundleSpecTest {
 
     @Before
     public void setUp() throws Exception {
-        spec = new PundleSpec("MySpec");
+        spec = new PundleSpec(PundleType.PACKAGE, "MySpec");
     }
 
     @Test
@@ -21,8 +21,8 @@ public class PundleSpecTest {
     }
 
     @Test
-    public void isEqualIfNamesMatch() {
-        PundleSpec sameName = new PundleSpec("MySpec");
+    public void isEqualIfTypesAndNamesMatch() {
+        PundleSpec sameName = new PundleSpec(PundleType.PACKAGE, "MySpec");
 
         assertEquals(spec, sameName);
     }
@@ -34,8 +34,17 @@ public class PundleSpecTest {
 
     @Test
     public void notEqualIfNamesDiffer() {
-        PundleSpec differentName = new PundleSpec("differentName");
+        PundleSpec differentName =
+                new PundleSpec(PundleType.PACKAGE, "differentName");
 
         assertFalse(spec.equals(differentName));
+    }
+
+    @Test
+    public void notEqualIfTypesDiffer() {
+        PundleSpec differentType =
+                new PundleSpec(PundleType.BUNDLE, "MySpec");
+
+        assertFalse(spec.equals(differentType));
     }
 }

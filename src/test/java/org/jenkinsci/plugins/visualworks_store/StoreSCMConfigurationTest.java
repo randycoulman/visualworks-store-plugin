@@ -85,6 +85,7 @@ public class StoreSCMConfigurationTest extends HudsonTestCase {
     }
 
     private List<PundleSpec> onePundle() {
-        return Arrays.asList(new PundleSpec("SomePackage"));
+        return Arrays.asList(
+                new PundleSpec(PundleType.PACKAGE, "SomePackage"));
     }
 }

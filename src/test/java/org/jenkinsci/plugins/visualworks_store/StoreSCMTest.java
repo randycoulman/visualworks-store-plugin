@@ -25,7 +25,8 @@ public class StoreSCMTest {
 
     @Test
     public void preparesPollingCommandForSinglePundle() {
-        List<PundleSpec> pundles = Arrays.asList(new PundleSpec("Package"));
+        List<PundleSpec> pundles = Arrays.asList(
+                new PundleSpec(PundleType.PACKAGE, "Package"));
         StoreSCM scm = new StoreSCM("Default", "Repo", pundles, "\\d+",
                 "Development", false, "");
 
@@ -38,7 +39,10 @@ public class StoreSCMTest {
 
     @Test
     public void preparesPollingCommandForMultiplePundles() {
-        List<PundleSpec> pundles = Arrays.asList(new PundleSpec("Package"), new PundleSpec("OtherPackage"), new PundleSpec("Package with Spaces"));
+        List<PundleSpec> pundles = Arrays.asList(
+                new PundleSpec(PundleType.PACKAGE, "Package"),
+                new PundleSpec(PundleType.PACKAGE, "OtherPackage"),
+                new PundleSpec(PundleType.PACKAGE, "Package with Spaces"));
         StoreSCM scm = new StoreSCM("Default", "Repo", pundles, "\\d+", "Development", false, "");
 
         ArgumentListBuilder builder = scm.preparePollingCommand("storeScript");
@@ -50,7 +54,8 @@ public class StoreSCMTest {
 
     @Test
     public void preparesCheckoutCommandForOnePundle() {
-        List<PundleSpec> pundles = Arrays.asList(new PundleSpec("Package"));
+        List<PundleSpec> pundles = Arrays.asList(
+                new PundleSpec(PundleType.PACKAGE, "Package"));
         StoreSCM scm = new StoreSCM("Default", "Repo", pundles, "\\d+", "Development", false, "");
 
         ArgumentListBuilder builder = scm.prepareCheckoutCommand("storeScript", lastBuildTime, currentBuildTime, new File("/path/to/changelog.xml"));
@@ -61,7 +66,10 @@ public class StoreSCMTest {
 
     @Test
     public void preparesCheckoutCommandForMultiplePundles() {
-        List<PundleSpec> pundles = Arrays.asList(new PundleSpec("Package"), new PundleSpec("Bundle"), new PundleSpec("Package with Spaces"));
+        List<PundleSpec> pundles = Arrays.asList(
+                new PundleSpec(PundleType.PACKAGE, "Package"),
+                new PundleSpec(PundleType.PACKAGE, "Bundle"),
+                new PundleSpec(PundleType.PACKAGE, "Package with Spaces"));
         StoreSCM scm = new StoreSCM("Default", "Repo", pundles, "\\d+", "Development", false, "");
 
         ArgumentListBuilder builder = scm.prepareCheckoutCommand("storeScript", lastBuildTime, currentBuildTime, new File("changelog.xml"));
@@ -73,7 +81,8 @@ public class StoreSCMTest {
 
     @Test
     public void preparesCheckoutCommandWithParcelBuilderFile() {
-        List<PundleSpec> pundles = Arrays.asList(new PundleSpec("Package"));
+        List<PundleSpec> pundles = Arrays.asList(
+                new PundleSpec(PundleType.PACKAGE, "Package"));
         StoreSCM scm = new StoreSCM("Default", "Repo", pundles, "\\d+", "Development", true, "parcelsToBuild");
 
         ArgumentListBuilder builder = scm.prepareCheckoutCommand("storeScript", lastBuildTime, currentBuildTime, new File("changelog.xml"));

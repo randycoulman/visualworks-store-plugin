@@ -7,12 +7,20 @@ import org.kohsuke.stapler.DataBoundConstructor;
 
 public class PundleSpec extends AbstractDescribableImpl<PundleSpec> {
     private String name;
+    private PundleType pundleType = PundleType.PACKAGE;
+
+    @DataBoundConstructor
+    public PundleSpec(PundleType pundleType, String name) {
+        if (name == null || name.isEmpty())
+            throw new IllegalArgumentException();
+
+        this.pundleType = pundleType == null ? PundleType.PACKAGE : pundleType;
+        this.name = name;
+    }
 
     @DataBoundConstructor
     public PundleSpec(String name) {
-        if (name == null || name.isEmpty()) throw new IllegalArgumentException();
-
-        this.name = name;
+        this(PundleType.PACKAGE, name);
     }
 
     @Override
@@ -22,7 +30,12 @@ public class PundleSpec extends AbstractDescribableImpl<PundleSpec> {
 
         PundleSpec that = (PundleSpec) o;
 
-        return name.equals(that.name);
+        return pundleType.equals(that.pundleType) && name.equals(that.name);
+    }
+
+    @Override
+    public String toString() {
+        return "PundleSpec{" + pundleType.getName() + " " + name + "}";
     }
 
     @Override
@@ -32,6 +45,10 @@ public class PundleSpec extends AbstractDescribableImpl<PundleSpec> {
 
     public String getName() {
         return name;
+    }
+
+    public PundleType getPundleType() {
+        return pundleType;
     }
 
     @Extension
