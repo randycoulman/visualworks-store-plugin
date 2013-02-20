@@ -24,7 +24,7 @@ public class StoreSCMTest {
     }
 
     @Test
-    public void preparesPollingCommandForSinglePundle() {
+    public void preparesPollingCommandForSinglePackage() {
         List<PundleSpec> pundles = Arrays.asList(
                 new PundleSpec(PundleType.PACKAGE, "Package"));
         StoreSCM scm = new StoreSCM("Default", "Repo", pundles, "\\d+",
@@ -32,51 +32,72 @@ public class StoreSCMTest {
 
         ArgumentListBuilder builder = scm.preparePollingCommand("storeScript");
 
-        assertEquals("storeScript -repository Repo -packages Package -versionRegex \\d+ -blessedAtLeast Development",
+        assertEquals("storeScript -repository Repo -package Package -versionRegex \\d+ -blessedAtLeast Development",
                 builder.toStringWithQuote());
 
+    }
+
+    @Test
+    public void preparesPollingCommandForSingleBundle() {
+        List<PundleSpec> pundles = Arrays.asList(
+                new PundleSpec(PundleType.BUNDLE, "Bundle"));
+        StoreSCM scm = new StoreSCM("Default", "Repo", pundles, "\\d+",
+                "Development", false, "");
+
+        ArgumentListBuilder builder = scm.preparePollingCommand("storeScript");
+
+        assertContains(builder.toStringWithQuote(), "-bundle Bundle");
     }
 
     @Test
     public void preparesPollingCommandForMultiplePundles() {
         List<PundleSpec> pundles = Arrays.asList(
                 new PundleSpec(PundleType.PACKAGE, "Package"),
-                new PundleSpec(PundleType.PACKAGE, "OtherPackage"),
+                new PundleSpec(PundleType.BUNDLE, "Bundle"),
                 new PundleSpec(PundleType.PACKAGE, "Package with Spaces"));
         StoreSCM scm = new StoreSCM("Default", "Repo", pundles, "\\d+", "Development", false, "");
 
         ArgumentListBuilder builder = scm.preparePollingCommand("storeScript");
 
-        final String commandLine = builder.toStringWithQuote();
-        assertTrue("Command line (" + commandLine + ") doesn't contain expected text",
-                commandLine.contains("-packages Package OtherPackage \"Package with Spaces\""));
+        assertContains(builder.toStringWithQuote(),
+                "-package Package -bundle Bundle -package \"Package with Spaces\"");
     }
 
     @Test
-    public void preparesCheckoutCommandForOnePundle() {
+    public void preparesCheckoutCommandForOnePackage() {
         List<PundleSpec> pundles = Arrays.asList(
                 new PundleSpec(PundleType.PACKAGE, "Package"));
         StoreSCM scm = new StoreSCM("Default", "Repo", pundles, "\\d+", "Development", false, "");
 
         ArgumentListBuilder builder = scm.prepareCheckoutCommand("storeScript", lastBuildTime, currentBuildTime, new File("/path/to/changelog.xml"));
 
-        assertEquals("storeScript -repository Repo -packages Package -versionRegex \\d+ -blessedAtLeast Development -since \"03/07/2012 15:28:35.000\" -now \"06/15/2012 07:23:42.000\" -changelog /path/to/changelog.xml",
+        assertEquals("storeScript -repository Repo -package Package -versionRegex \\d+ -blessedAtLeast Development -since \"03/07/2012 15:28:35.000\" -now \"06/15/2012 07:23:42.000\" -changelog /path/to/changelog.xml",
                 builder.toStringWithQuote());
+    }
+
+    @Test
+    public void preparesCheckoutCommandForOneBundle() {
+        List<PundleSpec> pundles = Arrays.asList(
+                new PundleSpec(PundleType.BUNDLE, "Bundle"));
+        StoreSCM scm = new StoreSCM("Default", "Repo", pundles, "\\d+", "Development", false, "");
+
+        ArgumentListBuilder builder = scm.prepareCheckoutCommand("storeScript", lastBuildTime, currentBuildTime, new File("/path/to/changelog.xml"));
+
+        assertContains(builder.toStringWithQuote(), "-bundle Bundle");
     }
 
     @Test
     public void preparesCheckoutCommandForMultiplePundles() {
         List<PundleSpec> pundles = Arrays.asList(
                 new PundleSpec(PundleType.PACKAGE, "Package"),
-                new PundleSpec(PundleType.PACKAGE, "Bundle"),
+                new PundleSpec(PundleType.BUNDLE, "Bundle"),
                 new PundleSpec(PundleType.PACKAGE, "Package with Spaces"));
         StoreSCM scm = new StoreSCM("Default", "Repo", pundles, "\\d+", "Development", false, "");
 
         ArgumentListBuilder builder = scm.prepareCheckoutCommand("storeScript", lastBuildTime, currentBuildTime, new File("changelog.xml"));
 
-        final String commandLine = builder.toStringWithQuote();
-        assertTrue("Command line (" + commandLine + ") doesn't contain expected text",
-                commandLine.contains("-packages Package Bundle \"Package with Spaces\""));
+        assertContains(builder.toStringWithQuote(),
+                "-package Package -bundle Bundle -package \"Package with Spaces\"");
     }
 
     @Test
@@ -87,8 +108,13 @@ public class StoreSCMTest {
 
         ArgumentListBuilder builder = scm.prepareCheckoutCommand("storeScript", lastBuildTime, currentBuildTime, new File("changelog.xml"));
 
-        final String commandLine = builder.toStringWithQuote();
-        assertTrue("Command line (" + commandLine + ") doesn't contain expected text",
-                commandLine.contains("-parcelBuilderFile parcelsToBuild"));
+        assertContains(builder.toStringWithQuote(),
+                "-parcelBuilderFile parcelsToBuild");
+    }
+
+    private void assertContains(String commandLine, String expectedText) {
+        assertTrue("{" + commandLine + "} doesn't contain {" +
+                expectedText + "}",
+                commandLine.contains(expectedText));
     }
 }

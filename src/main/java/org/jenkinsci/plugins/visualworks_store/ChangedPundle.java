@@ -36,7 +36,7 @@ public class ChangedPundle implements ChangeLogSet.AffectedFile {
     }
 
     public String getDescriptor() {
-        String descriptor = pundleType.getName() + " " + name;
+        String descriptor = pundleType.getDescription() + " " + name;
         if (isDeletion()) return descriptor;
 
         return descriptor + " (" + version + ")";

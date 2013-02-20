@@ -32,15 +32,10 @@ public class StoreChangeLogParser extends ChangeLogParser {
             Element root = document.getRootElement();
             for (Object eachPundle : root.elements()) {
                 Element pundle = (Element) eachPundle;
-                PundleType pundleType;
-                if (pundle.getName().equals("package")) {
-                    pundleType = PundleType.PACKAGE;
-                } else if (pundle.getName().equals("bundle")) {
-                    pundleType = PundleType.BUNDLE;
-                } else {
-                    // Unknown element type; skip it
-                    continue;
-                }
+
+                PundleType pundleType = PundleType.named(pundle.getName());
+                if (pundleType == null) continue;
+
                 List blessings = pundle.elements("blessing");
 
                 ChangedPundle changedPundle = new ChangedPundle(pundle.attributeValue("action"),

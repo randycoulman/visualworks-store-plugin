@@ -35,7 +35,7 @@ public class PundleSpec extends AbstractDescribableImpl<PundleSpec> {
 
     @Override
     public String toString() {
-        return "PundleSpec{" + pundleType.getName() + " " + name + "}";
+        return "PundleSpec{" + pundleType.getDescription() + " " + name + "}";
     }
 
     @Override

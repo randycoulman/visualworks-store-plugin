@@ -203,10 +203,7 @@ public class StoreSCM extends SCM {
 
         builder.add(storeScript);
         builder.add("-repository", repositoryName);
-        builder.add("-packages");
-        for (PundleSpec spec : pundles) {
-            builder.add(spec.getName());
-        }
+        addPundleArguments(builder);
         builder.add("-versionRegex", versionRegex);
         builder.add("-blessedAtLeast", minimumBlessingLevel);
 
@@ -222,10 +219,7 @@ public class StoreSCM extends SCM {
         ArgumentListBuilder builder = new ArgumentListBuilder();
         builder.add(storeScript);
         builder.add("-repository", repositoryName);
-        builder.add("-packages");
-        for (PundleSpec spec : pundles) {
-            builder.add(spec.getName());
-        }
+        addPundleArguments(builder);
         builder.add("-versionRegex", versionRegex);
         builder.add("-blessedAtLeast", minimumBlessingLevel);
         builder.add("-since", formatter.format(lastBuildTime.getTime()));
@@ -237,6 +231,13 @@ public class StoreSCM extends SCM {
         }
 
         return builder;
+    }
+
+    private void addPundleArguments(ArgumentListBuilder builder) {
+        for (PundleSpec spec : pundles) {
+            final String flag = spec.getPundleType().getName();
+            builder.add("-" + flag, spec.getName());
+        }
     }
 
     private Calendar midnight() {
