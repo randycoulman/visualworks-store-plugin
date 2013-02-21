@@ -50,6 +50,22 @@ public class StoreSCMConfigurationTest extends HudsonTestCase {
                 loaded.getParcelBuilderInputFilename());
     }
 
+    public void testConfigurationRoundtripWithMultiplePundles()
+            throws Exception {
+        StoreSCM.DescriptorImpl descriptor =
+                hudson.getDescriptorByType(StoreSCM.DescriptorImpl.class);
+        descriptor.setStoreScripts(new StoreScript("theScript", "path"));
+
+        List<PundleSpec> pundleSpecs = Arrays.asList(
+                new PundleSpec(PundleType.PACKAGE, "SomePackage"),
+                new PundleSpec(PundleType.BUNDLE, "SomeBundle"));
+        StoreSCM scm = new StoreSCM("theScript", "Repo", pundleSpecs, "\\d+",
+                "Integrated", false, "");
+        StoreSCM loaded = doRoundtripConfiguration(scm);
+
+        assertEquals("pundles", pundleSpecs, loaded.getPundles());
+    }
+
     public void testConfigurationRoundtripWithParcelBuilderFile()
             throws Exception {
         StoreSCM scm = new StoreSCM("script", "Repo", onePundle(), "\\d+",

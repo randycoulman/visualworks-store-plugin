@@ -18,6 +18,12 @@
   <f:entry title="Pundles" field="pundles">
     <f:repeatable field="pundles" minimum="1" add="Add Pundle" header="Pundle">
       <table style="width: 100%">
+        <f:entry title="Pundle Type:" field="pundleType">
+          <f:enum>
+            ${it.description}
+          </f:enum>
+        </f:entry>
+
         <f:entry title="Name:" field="name">
           <f:textbox/>
         </f:entry>
