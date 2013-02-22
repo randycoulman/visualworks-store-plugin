@@ -42,11 +42,6 @@ public class PundleSpec extends AbstractDescribableImpl<PundleSpec> {
         this.name = name;
     }
 
-    @DataBoundConstructor
-    public PundleSpec(String name) {
-        this(PundleType.PACKAGE, name);
-    }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
