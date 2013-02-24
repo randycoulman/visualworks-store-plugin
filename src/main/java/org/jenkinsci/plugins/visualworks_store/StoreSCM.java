@@ -171,24 +171,6 @@ public class StoreSCM extends SCM {
         return null;
     }
 
-    private StoreRevisionState findCorrectBaseline(AbstractBuild<?, ?> lastBuild) {
-        for (AbstractBuild<?, ?> build = lastBuild; build != null; build = lastBuild.getPreviousBuild()) {
-            List<StoreRevisionState> revisionStates = build.getActions(StoreRevisionState.class);
-            for (StoreRevisionState state : revisionStates) {
-                if (isRelevantRevisionState(state)) {
-                    return state;
-                }
-            }
-
-            if (!revisionStates.isEmpty()) return null;
-        }
-        return null;
-    }
-
-    private boolean isRelevantRevisionState(StoreRevisionState state) {
-        return state != null && state.getRepositoryName().equals(repositoryName);
-    }
-
     @Override
     public DescriptorImpl getDescriptor() {
         return (DescriptorImpl) super.getDescriptor();
@@ -257,6 +239,33 @@ public class StoreSCM extends SCM {
         return builder;
     }
 
+    StoreScript getStoreScript() {
+        for (StoreScript script : getDescriptor().getStoreScripts()) {
+            if (script.getName().equals(scriptName)) {
+                return script;
+            }
+        }
+        return null;
+    }
+
+    private StoreRevisionState findCorrectBaseline(AbstractBuild<?, ?> lastBuild) {
+        for (AbstractBuild<?, ?> build = lastBuild; build != null; build = lastBuild.getPreviousBuild()) {
+            List<StoreRevisionState> revisionStates = build.getActions(StoreRevisionState.class);
+            for (StoreRevisionState state : revisionStates) {
+                if (isRelevantRevisionState(state)) {
+                    return state;
+                }
+            }
+
+            if (!revisionStates.isEmpty()) return null;
+        }
+        return null;
+    }
+
+    private boolean isRelevantRevisionState(StoreRevisionState state) {
+        return state != null && state.getRepositoryName().equals(repositoryName);
+    }
+
     private void addPundleArguments(ArgumentListBuilder builder) {
         for (PundleSpec spec : pundles) {
             final String flag = spec.getPundleType().getName();
@@ -271,15 +280,6 @@ public class StoreSCM extends SCM {
         midnight.set(Calendar.SECOND, 0);
         midnight.set(Calendar.MILLISECOND, 0);
         return midnight;
-    }
-
-    StoreScript getStoreScript() {
-        for (StoreScript script : getDescriptor().getStoreScripts()) {
-            if (script.getName().equals(scriptName)) {
-                return script;
-            }
-        }
-        return null;
     }
 
     @Extension

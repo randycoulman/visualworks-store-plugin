@@ -31,7 +31,7 @@ import org.kohsuke.stapler.DataBoundConstructor;
 
 public class PundleSpec extends AbstractDescribableImpl<PundleSpec> {
     private String name;
-    private PundleType pundleType = PundleType.PACKAGE;
+    private PundleType pundleType;
 
     @DataBoundConstructor
     public PundleSpec(PundleType pundleType, String name) {

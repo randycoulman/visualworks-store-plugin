@@ -54,10 +54,6 @@ class StoreRevisionState extends SCMRevisionState {
         this.pundleVersions = new HashMap<String, String>();
     }
 
-    private static String stripQuotes(String s) {
-        return (s.startsWith("\"")) ? s.substring(1, s.length() - 1) : s;
-    }
-
     public void addPundle(String name, String version) {
         pundleVersions.put(name, version);
     }
@@ -103,17 +99,21 @@ class StoreRevisionState extends SCMRevisionState {
         return true;
     }
 
-    private Set<String> pundlesNotIn(final Set<String> otherKeys) {
-        Set<String> result = new HashSet<String>(pundleVersions.keySet());
-        result.removeAll(otherKeys);
-        return result;
-    }
-
     public void changeVersion(String pundleName, String newVersion) {
         pundleVersions.put(pundleName, newVersion);
     }
 
     public String getRepositoryName() {
         return repositoryName;
+    }
+
+    private Set<String> pundlesNotIn(final Set<String> otherKeys) {
+        Set<String> result = new HashSet<String>(pundleVersions.keySet());
+        result.removeAll(otherKeys);
+        return result;
+    }
+
+    private static String stripQuotes(String s) {
+        return (s.startsWith("\"")) ? s.substring(1, s.length() - 1) : s;
     }
 }

@@ -44,13 +44,6 @@ public class ChangedPundle implements ChangeLogSet.AffectedFile {
         this(action, pundleType, name, null);
     }
 
-    private EditType toEditType(String action) {
-        if (action.equals("added")) return EditType.ADD;
-        if (action.equals("deleted")) return EditType.DELETE;
-
-        return EditType.EDIT;
-    }
-
     public String getPath() {
         return getDescriptor();
     }
@@ -64,6 +57,13 @@ public class ChangedPundle implements ChangeLogSet.AffectedFile {
         if (isDeletion()) return descriptor;
 
         return descriptor + " (" + version + ")";
+    }
+
+    private EditType toEditType(String action) {
+        if (action.equals("added")) return EditType.ADD;
+        if (action.equals("deleted")) return EditType.DELETE;
+
+        return EditType.EDIT;
     }
 
     private boolean isDeletion() {
