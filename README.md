@@ -1,4 +1,4 @@
-= Jenkins Visualworks Store Plugin
+# Jenkins Visualworks Store Plugin
 
 Provides Jenkins integration with
 [Cincom Visualworks](http://cincomsmalltalk.com/) Smalltalk Store.
