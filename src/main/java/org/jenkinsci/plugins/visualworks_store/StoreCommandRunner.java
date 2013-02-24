@@ -49,7 +49,6 @@ class StoreCommandRunner {
 
         return outputStream.toString();
     }
-
 }
 
 class StoreCommandFailure extends Exception {

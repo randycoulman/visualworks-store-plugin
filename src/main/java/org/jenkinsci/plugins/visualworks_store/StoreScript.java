@@ -26,6 +26,16 @@ package org.jenkinsci.plugins.visualworks_store;
 
 import org.kohsuke.stapler.DataBoundConstructor;
 
+/**
+ * Represents a shell-script or batch file for running a VW image with the
+ * StoreCI package.
+ * <p/>
+ * We don't use the standard Jenkins ToolInstallation support here,
+ * because it uses paths rather than executable filenames,
+ * and there isn't an easy way to support installation of a StoreCI script.
+ *
+ * @author Randy Coulman
+ */
 public final class StoreScript {
     private final String name;
     private final String path;

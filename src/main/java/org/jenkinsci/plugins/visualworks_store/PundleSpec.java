@@ -29,6 +29,12 @@ import hudson.model.AbstractDescribableImpl;
 import hudson.model.Descriptor;
 import org.kohsuke.stapler.DataBoundConstructor;
 
+/**
+ * Represents a Store Pundle (Package or Bundle) to be checked for
+ * modifications.
+ *
+ * @author Randy Coulman
+ */
 public class PundleSpec extends AbstractDescribableImpl<PundleSpec> {
     private String name;
     private PundleType pundleType;

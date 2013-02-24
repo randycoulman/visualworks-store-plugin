@@ -27,6 +27,13 @@ package org.jenkinsci.plugins.visualworks_store;
 import hudson.scm.ChangeLogSet;
 import hudson.scm.EditType;
 
+/**
+ * Represents a StorePundle that has been changed since the previous build.
+ * <p/>
+ * Adapts pundles to Jenkins' AffectedFile API.
+ *
+ * @author Randy Coulman
+ */
 public class ChangedPundle implements ChangeLogSet.AffectedFile {
     private EditType editType;
     private PundleType pundleType;

@@ -46,13 +46,49 @@ import java.util.Calendar;
 import java.util.List;
 import java.util.TimeZone;
 
+/**
+ * SCM for Visualworks Smalltalk Store.
+ *
+ * @author Randy Coulman
+ */
 public class StoreSCM extends SCM {
+    /**
+     * The name of the Store repository to monitor.
+     */
     private final String repositoryName;
+
+    /**
+     * The list of root StorePundles (Packages or Bundles) to monitor.
+     */
     private List<PundleSpec> pundles;
+
+    /**
+     * A Regex11-style regular expression that matches the pundle versions to
+     * include.
+     */
     private final String versionRegex;
+
+    /**
+     * Include only pundle versions with at least this blessing level.
+     */
     private final String minimumBlessingLevel;
+
+    /**
+     * True if a file should be generated that contains a list of pundle
+     * versions to load into a new image using a tool such as ParcelBuilder.
+     * <p/>
+     * False if no such file should be generated.
+     */
     private final boolean generateParcelBuilderInputFile;
+
+    /**
+     * The name of the pundle version list file to generate.
+     */
     private final String parcelBuilderInputFilename;
+
+    /**
+     * The name of the script to use to run the StoreCI package in a VW image.
+     */
     private String scriptName;
 
     @DataBoundConstructor
@@ -305,6 +341,12 @@ public class StoreSCM extends SCM {
             return true;
         }
 
+        /**
+         * Generates a list of the standard Store blessing levels for use in
+         * the configuration form.
+         *
+         * @return The list of blessing levels.
+         */
         @SuppressWarnings("UnusedDeclaration")
         public ListBoxModel doFillMinimumBlessingLevelItems() {
             ListBoxModel items = new ListBoxModel();
