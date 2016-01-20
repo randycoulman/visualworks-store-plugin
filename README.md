@@ -1,5 +1,7 @@
 # Jenkins Visualworks Store Plugin
 
+![Maintenance Status](https://img.shields.io/badge/maintenance-active-green.svg)
+
 Provides Jenkins integration with
 [Cincom Visualworks](http://cincomsmalltalk.com/) Smalltalk Store.
 
